@@ -1,0 +1,10 @@
+[project]
+name = "enhancing-llm-performance-benchmark"
+version = "0.1.0"
+description = "End-to-end reproducible benchmark for Enhancing LLM Performance (MT vol.7): efficacy, fine-tuning, inference — verified on real + live data, PhD-ready."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scikit-learn", "torch", "transformers", "datasets", "pyyaml", "matplotlib", "tqdm", "scipy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

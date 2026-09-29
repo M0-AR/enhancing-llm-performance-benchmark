@@ -1,0 +1,8 @@
+seed: 1337
+suites:
+  - name: smoke
+    out: results/universe_report.json
+  - name: full
+    repeats: 1
+quality_floor: {gsm8k_strict_min: 0.72, flexible_tie: true}
+budgets: {latency_p95_ms: 200, tpot_ms: 200, ttft_ms: 2000}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELPB — Enhancing LLM Performance Benchmark Demo</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#0b1020;color:#e8ecf5}
+.hero{padding:48px 32px;text-align:center;background:linear-gradient(135deg,#1b2a6b,#6b1b5a)}
+.hero h1{margin:0 0 8px;font-size:34px}.hero p{margin:6px 0;opacity:.92}
+.badges{margin-top:12px}.badges span{display:inline-block;background:#ffffff22;border:1px solid #ffffff44;border-radius:999px;padding:4px 12px;margin:3px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding:24px;max-width:1100px;margin:0 auto}
+.card{background:#141b36;border:1px solid #2a3563;border-radius:14px;padding:16px}
+.card h3{margin:0 0 8px;font-size:16px}.card img{width:100%;border-radius:8px;background:#fff}
+.cmd{background:#05070f;border:1px solid #2a3563;border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:13px;white-space:pre-wrap}
+.footer{text-align:center;padding:20px;opacity:.75;font-size:13px}
+a{color:#8ab4ff}
+</style></head>
+<body>
+<div class="hero">
+<h1>Enhancing LLM Performance — Universe Benchmark</h1>
+<p><b>CEO summary:</b> every efficiency claim in the book, reproduced on CPU in ~20s with real + live data.</p>
+<p>Quant × Sparsity 7–9× &nbsp;•&nbsp; Kronecker rank 64 vs LoRA 1 &nbsp;•&nbsp; SquareHead holds 75% &nbsp;•&nbsp; CMT −38% EER</p>
+<div class="badges"><span>MIT</span><span>Python 3.12</span><span>Docker ✅</span><span>10 exps</span><span>6 tests ✅</span><span>live-gated</span></div>
+</div>
+<div class="grid">
+<div class="card"><h3>Ch1 — Scale saturates (log-linear)</h3><img src="../results/figures/fig01_scaling.png" alt="scaling"></div>
+<div class="card"><h3>Ch2 — Short-output pipeline tax</h3><img src="../results/figures/fig02_speed.png" alt="speed"></div>
+<div class="card"><h3>Ch6 — SquareHead recovery 50–80%</h3><img src="../results/figures/fig05_sparse.png" alt="sparse"></div>
+<div class="card"><h3>Run it (zero → hero)</h3><div class="cmd">pip install -r requirements.txt
+pytest -q  # 6 passed
+python scripts/run_all.py --out results/universe_report.json
+python scripts/verify_repro.py  # VERIFY OK
+docker compose up bench</div></div>
+</div>
+<div class="footer">Book: Passban/Way/Rezagholizadeh, Springer MT vol.7 (2025) • <a href="../results/REPORT.md">REPORT.md</a> • <a href="../papers/ABSTRACT.md">PhD draft</a></div>
+</body>
+</html>

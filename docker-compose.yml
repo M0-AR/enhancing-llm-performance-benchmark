@@ -1,0 +1,51 @@
+services:
+  bench:
+    build: .
+    image: elpb-bench:0.1.0
+    container_name: elpb-bench
+    volumes:
+      - ./results:/work/results
+      - ./benchmarks:/work/benchmarks:ro
+    environment:
+      - PYTHONHASHSEED=0
+      - ELPB_SEED=1337
+      - HF_HUB_OFFLINE=1
+    command: >
+      bash -c "python -V && pip freeze | sort | tee /work/results/versions.txt &&
+               pytest -q | tee /work/results/pytest.txt &&
+               python scripts/run_all.py --out /work/results/universe_report.json | tee /work/results/run.log &&
+               python scripts/verify_repro.py | tee /work/results/verify.log"
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+    networks: [benchnet]
+
+  docs:
+    image: python:3.12-slim
+    container_name: elpb-docs
+    volumes:
+      - ./docs:/docs:ro
+      - ./README.md:/README.md:ro
+    working_dir: /docs
+    command: ["python", "-m", "http.server", "8001"]
+    ports:
+      - "8001:8001"
+    networks: [benchnet]
+
+  lab:
+    build: .
+    container_name: elpb-lab
+    volumes:
+      - ./notebooks:/work/notebooks
+      - ./results:/work/results
+    ports:
+      - "8888:8888"
+    command: ["python", "-m", "http.server", "8888"]
+    networks: [benchnet]
+    profiles: ["lab"]
+
+networks:
+  benchnet:
+    driver: bridge
