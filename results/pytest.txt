@@ -1,0 +1,12 @@
+......                                                                   [100%]
+=============================== warnings summary ===============================
+tests/test_all.py::test_pipeline_runs_10
+  /work/tests/../src/elpb/exp03_int4_cpu.py:12: UserWarning: torch.quantize_per_tensor, torch.quantize_per_channel and other quantized tensor creation functions that produce tensors with dtype torch.quint8, torch.qint8, and torch.qint32 are deprecated and will be removed in a future PyTorch release. Please see https://github.com/pytorch/pytorch/issues/184982 for more information. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/quantized/Quantizer.cpp:111.)
+    Wq = torch.quantize_per_tensor(W, 0.05, 0, torch.qint8)
+
+tests/test_all.py: 20 warnings
+  /usr/local/lib/python3.12/site-packages/sklearn/neural_network/_multilayer_perceptron.py:785: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (150) reached and the optimization hasn't converged yet.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 21 warnings in 43.01s

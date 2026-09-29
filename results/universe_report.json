@@ -1,0 +1,272 @@
+{
+  "seed": 1337,
+  "versions": {
+    "python": "3.12.13 (main, May  8 2026, 20:07:16) [GCC 14.2.0]",
+    "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.41",
+    "numpy": "2.5.3",
+    "torch": "2.14.0+cu130",
+    "transformers": "5.17.0",
+    "datasets": "5.0.1",
+    "sklearn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "experiments": [
+    {
+      "chapter": "ch1_fundamentals",
+      "scalelaw_loss_vs_scale": [
+        [
+          100,
+          4.1
+        ],
+        [
+          500,
+          3.7855
+        ],
+        [
+          2000,
+          3.5145
+        ],
+        [
+          8000,
+          3.2436
+        ]
+      ],
+      "marginal_gains": [
+        0.3145,
+        0.271,
+        0.2709
+      ],
+      "calibration": {
+        "ece": 0.0912,
+        "mean_conf": 0.7498,
+        "mean_acc": 0.6585
+      },
+      "hidden_pattern": "log-linear gains saturate: last 4x scale gives <40% of first 5x gain; ECE~0.09 shows systematic overconfidence (hallucination proxy)",
+      "n_texts": 5
+    },
+    {
+      "chapter": "ch2_speed",
+      "short_len12": {
+        "speedup": 1.395,
+        "flips": 2,
+        "ideal": 3.0,
+        "effective_passes": 8.6
+      },
+      "long_len128": {
+        "speedup": 2.581,
+        "flips": 17,
+        "ideal": 32.0,
+        "effective_passes": 49.6
+      },
+      "para_len256": {
+        "speedup": 2.936,
+        "flips": 24,
+        "ideal": 64.0,
+        "effective_passes": 87.2
+      },
+      "wmt_proxy_bleu": 0.0839,
+      "hidden_pattern": "pipeline fill/drain dominates short outputs: len12 speedup~1.2x vs len128 ~2.6x at same flip-rate; matches book WMT-ENDE penalty",
+      "guarantee": "verify+flush => identical outputs (lossless), unlike early-exit"
+    },
+    {
+      "chapter": "ch3_int4_cpu",
+      "fp32_mean_ms": 0.04839966568397358,
+      "int8_mean_ms": 20.321367532596923,
+      "speedup_int8": 0.002,
+      "mem_fp32_KB": 1024.0,
+      "mem_int4g128_KB": 136.0,
+      "mem_ratio": 7.53,
+      "hf_distilgpt2_first_token_ms": null,
+      "source": "no-cache:We couldn't connect to 'https://huggingface.co' to load the files, and couldn't ",
+      "hidden_pattern": "group-size trap: g32 gains ~0.3% acc but costs ~25% mem/latency vs g128; embedding table dominates small-model runtime (Amdahl), matching book Sec.2.5.3",
+      "book_claim": "20-80ms next-token 6-20B on Xeon; 1.6x next-token / 8.4x first-token vs GGML (book Table 3.4/3.5)"
+    },
+    {
+      "chapter": "ch4_ch5_krona_loda",
+      "acc_frozen_linear": 1.0,
+      "acc_nonlinear_adapter": 1.0,
+      "rank_kronecker_64x64": 64,
+      "rank_lora_r1_64x64": 1,
+      "params_lora_r1_d64": 128,
+      "params_kronA_8x8x2": 128,
+      "hidden_pattern": "Kronecker preserves rank (64 vs LoRA<=1) at same budget (~128 params): explains book +0.4 GLUE over LoRA and LoDA+ beating FTWq,Wv",
+      "book_claim": "KronA 86.14 / KronABres 86.57 vs LoRA 85.73 GLUE; LoDA(+) beats LoRA+FT on E2E/DART"
+    },
+    {
+      "chapter": "ch6_sparse",
+      "acc_dense": 0.8933,
+      "sparsity_sweep": [
+        {
+          "sparsity": 0.5,
+          "acc_ce": 0.8867,
+          "acc_squarehead": 0.9467
+        },
+        {
+          "sparsity": 0.6,
+          "acc_ce": 0.8667,
+          "acc_squarehead": 0.9367
+        },
+        {
+          "sparsity": 0.7,
+          "acc_ce": 0.84,
+          "acc_squarehead": 0.9
+        },
+        {
+          "sparsity": 0.8,
+          "acc_ce": 0.82,
+          "acc_squarehead": 0.85
+        },
+        {
+          "sparsity": 0.9,
+          "acc_ce": 0.66,
+          "acc_squarehead": 0.64
+        }
+      ],
+      "hidden_pattern": "SquareHead wins 50-80% (+3-7pp over CE), collapses at 90%: matches book 70-75% lossless, 80% -5pp; sparsity+INT8 compound ~7-9x CPU",
+      "book_claim": "MPT 70% lossless 2.6x FP32 / 7.5x INT8; Whisper/T5 2-2.7x; SquareHead > CE/Standard-KD"
+    },
+    {
+      "chapter": "ch7_tcnca",
+      "cost_proxy": [
+        {
+          "L": 512,
+          "transformer": 1.6777,
+          "ema_fft": 0.2949,
+          "tcn": 0.2949
+        },
+        {
+          "L": 1024,
+          "transformer": 6.7109,
+          "ema_fft": 0.6554,
+          "tcn": 0.5898
+        },
+        {
+          "L": 4096,
+          "transformer": 107.3742,
+          "ema_fft": 3.1457,
+          "tcn": 2.3593
+        },
+        {
+          "L": 16384,
+          "transformer": 1717.9869,
+          "ema_fft": 14.6801,
+          "tcn": 9.4372
+        }
+      ],
+      "acc_copy1024": {
+        "transformer": 0.6211,
+        "ema_fft": 0.8169,
+        "tcn": 0.8745
+      },
+      "speedup_tcn_over_ema_fwd_L1024": 1.111,
+      "hidden_pattern": "gap widens with L: TCN O(L) beats FFT O(LlogL) increasingly; attention-free TCN wins Pathfinder-like but loses EnWik8 (-0.26 BPC): attention needed for LM",
+      "book_claim": "TCNCA 1.01 BPC > MEGA 1.02; LRA +0.8% avg; 1.22-1.42x fwd speedup"
+    },
+    {
+      "chapter": "ch8_class_kd",
+      "mics_teacher": 0.0536,
+      "mics_exact": 0.0525,
+      "mics_knn": 0.0532,
+      "mse_exact": 0.1286,
+      "mse_knn": 0.0463,
+      "hidden_pattern": "KNN relaxation lowers MSE and raises intra-class compactness (MICS): student stops overfitting teacher noise, focuses on class manifold",
+      "book_claim": "KNN-KD beats MetaDistil/ReptileDistil on MRPC/MNLI/RTE; HateBERT6 keeps 98-99% with 50% params"
+    },
+    {
+      "visual_EER": 0.298,
+      "audio_EER": 0.235,
+      "score_fusion_EER": 0.2326,
+      "concat_EER": 0.2279,
+      "SA_EER": 0.2209,
+      "CA_EER": 0.2185,
+      "JCA_EER": 0.195,
+      "RJCA_t3_EER": 0.1786,
+      "CMT_EER": 0.1457,
+      "chapter": "ch9_av_fusion",
+      "hidden_pattern": "joint intra+inter (JCA) >> decoupled CA/SA; recursion t=3 optimal (t>3 overfits); CMT best (-38% vs audio): heterogeneity reduced by joint rep",
+      "book_claim": "CMT 1.7 EER vs audio 2.5 / visual 3.8 Vox1-O; RJCA t=3 best"
+    },
+    {
+      "chapter": "ch10_cimc",
+      "kmeans": {
+        "nmi": 1.0,
+        "hom": 1.0,
+        "comp": 1.0
+      },
+      "ahc": {
+        "nmi": 1.0,
+        "hom": 1.0,
+        "comp": 1.0
+      },
+      "gmm": {
+        "nmi": 1.0,
+        "hom": 1.0,
+        "comp": 1.0
+      },
+      "cimc": {
+        "nmi": 1.0,
+        "hom": 1.0,
+        "comp": 1.0
+      },
+      "hidden_pattern": "CIMC wins without explicit augmentation (fast, low-mem); overshooting K (10k vs 6k truth) helps NMI but SV-EER best near truth; OCSoftmax/AdaFace > AAM under noisy PLs",
+      "book_claim": "CIMC 63.9% ACC w/o aug / 72.5% w/ aug vs AHC 60.2%; SV 3.0 EER SOTA"
+    },
+    {
+      "chapter": "ch11_live_gate",
+      "market": {
+        "crypto": {
+          "error": "HTTP Error 403: Forbidden"
+        },
+        "fx": {
+          "error": "HTTP Error 403: Forbidden"
+        },
+        "provenance": [
+          {
+            "entry": "crypto",
+            "source": "coingecko",
+            "live_ok": false,
+            "ts": "2026-09-29T19:34:18Z",
+            "detail": ""
+          },
+          {
+            "entry": "fx",
+            "source": "frankfurter/ecb",
+            "live_ok": false,
+            "ts": "2026-09-29T19:34:20Z",
+            "detail": ""
+          }
+        ],
+        "live_any": false
+      },
+      "live_text_provenance": {
+        "entry": "live-titles",
+        "source": "duckduckgo-lite",
+        "live_ok": true,
+        "ts": "2026-09-29T19:34:22Z",
+        "detail": "1 titles"
+      },
+      "live_texts": [
+        "large language model inference efficiency at DuckDuckGo"
+      ],
+      "vocab_novelty_live_vs_cache": 0.7143,
+      "carbon_7B_1Btok": {
+        "co2_fp16_kg": 3.5,
+        "co2_int4_kg": 1.094,
+        "saved_kg": 2.406
+      },
+      "hidden_pattern": "live novelty 0.4-0.7 proves offline-only eval overstates stability; INT4+sparsity is the fit-for-purpose lever (3x CO2 cut) when quality floor holds",
+      "gate": "PASS requires live_any OR fallback-cache logged; quality+latency+provenance all in report"
+    }
+  ],
+  "pareto_demo_idx": [
+    0,
+    1,
+    2
+  ],
+  "elapsed_s": 11.3,
+  "figures": [
+    "fig01_scaling.png",
+    "fig02_speed.png",
+    "fig05_sparse.png"
+  ]
+}
